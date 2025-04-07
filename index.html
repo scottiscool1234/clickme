@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Funny JT Click Page</title>
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    button {
+      padding: 20px 40px;
+      font-size: 24px;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10000;
+      position: relative;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      z-index: 5;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+      50% { transform: translate(-50%, -50%) translateY(-30px); }
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+      50% { transform: translate(-50%, -50%) rotate(5deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    @keyframes flip {
+      0% { transform: translate(-50%, -50%) rotateY(0deg); }
+      100% { transform: translate(-50%, -50%) rotateY(360deg); }
+    }
+
+    @keyframes skew {
+      0%, 100% { transform: translate(-50%, -50%) skew(0deg, 0deg); }
+      50% { transform: translate(-50%, -50%) skew(10deg, 5deg); }
+    }
+
+    @keyframes growShrink {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(0.5); }
+    }
+
+    .fade-in { animation: fadeIn 1s ease forwards; }
+    .bounce { animation: bounce 1s ease-in-out 1; }
+    .spin { animation: spin 1s linear 1; }
+    .funny1 { animation: wiggle 1s ease-in-out 1; }
+    .funny2 { animation: pulse 1s ease-in-out 1; }
+    .funny3 { animation: flip 1s linear 1; }
+    .funny4 { animation: skew 1s ease-in-out 1; }
+    .funny5 { animation: growShrink 1s ease-in-out 1; }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <button id="clickBtn">Click Me</button>
+  <div id="overlay"></div>
+  <canvas id="confettiCanvas" class="confetti"></canvas>
+
+  <!-- Audio files -->
+  <audio id="audio" src="clapping.mp3" loop></audio>
+  <audio id="danceTrack" src="GELO - Tweaker (Lyrics) i might swerve in that corner.mp3" loop></audio>
+
+  <!-- Confetti script -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const button = document.getElementById('clickBtn');
+    const audio = document.getElementById('audio');
+    const danceTrack = document.getElementById('danceTrack');
+    const overlay = document.getElementById('overlay');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+
+    // Start background music on first interaction
+    document.body.addEventListener('click', () => {
+      if (danceTrack.paused) {
+        danceTrack.volume = 0.4;
+        danceTrack.play();
+      }
+    }, { once: true });
+
+    function applyEffect(effectName) {
+      overlay.className = ''; // remove all previous animations
+      void overlay.offsetWidth; // force reflow
+      overlay.classList.add(effectName);
+    }
+
+    button.addEventListener('click', () => {
+      // Play click sound
+      audio.currentTime = 0;
+      audio.play();
+
+      // Set up image and ensure it stays
+      overlay.style.backgroundImage = 'url("jt.JPG")';
+      overlay.style.opacity = '1';
+      overlay.className = ''; // reset all classes
+      void overlay.offsetWidth;
+
+      // Sequence with minimal overlap
+      applyEffect('fade-in');
+
+      setTimeout(() => applyEffect('bounce'), 1000);
+      setTimeout(() => applyEffect('spin'), 1800);
+      setTimeout(() => applyEffect('funny1'), 2600);
+      setTimeout(() => applyEffect('funny2'), 3400);
+      setTimeout(() => applyEffect('funny3'), 4200);
+      setTimeout(() => applyEffect('funny4'), 5000);
+      setTimeout(() => applyEffect('funny5'), 5800);
+
+      // Confetti 💥
+      setTimeout(() => {
+        confetti.create(confettiCanvas, { resize: true })({
+          particleCount: 300,
+          spread: 200,
+          origin: { y: 0.6 }
+        });
+      }, 6600);
+    });
+  </script>
+</body>
+</html>
