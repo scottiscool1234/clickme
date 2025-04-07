@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Funny JT Click Page</title>
+  <title>JT Dance Page</title>
   <style>
     body {
       background-color: black;
@@ -29,17 +29,26 @@
       position: relative;
     }
 
-    #overlay {
+    .overlay, .overlay2 {
       position: absolute;
-      top: 50%;
-      left: 50%;
       width: 300px;
       height: 400px;
-      transform: translate(-50%, -50%);
       background-size: cover;
       background-position: center;
       opacity: 0;
       z-index: 5;
+    }
+
+    .overlay {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .overlay2 {
+      top: 50%;
+      left: 65%;
+      transform: translate(-50%, -50%);
     }
 
     @keyframes fadeIn {
@@ -81,6 +90,11 @@
       50% { transform: translate(-50%, -50%) scale(0.5); }
     }
 
+    @keyframes danceBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
     .fade-in { animation: fadeIn 1s ease forwards; }
     .bounce { animation: bounce 1s ease-in-out 1; }
     .spin { animation: spin 1s linear 1; }
@@ -89,6 +103,10 @@
     .funny3 { animation: flip 1s linear 1; }
     .funny4 { animation: skew 1s ease-in-out 1; }
     .funny5 { animation: growShrink 1s ease-in-out 1; }
+    .dance-bounce {
+      animation: danceBounce 0.6s ease-in-out infinite;
+      opacity: 1 !important;
+    }
 
     .confetti {
       position: fixed;
@@ -104,14 +122,13 @@
 </head>
 <body>
   <button id="clickBtn">Click Me</button>
-  <div id="overlay"></div>
+  <div id="overlay" class="overlay"></div>
+  <div id="overlay2" class="overlay2"></div>
   <canvas id="confettiCanvas" class="confetti"></canvas>
 
-  <!-- Audio files -->
   <audio id="audio" src="clapping.mp3" loop></audio>
-  <audio id="danceTrack" src="GELO - Tweaker (Lyrics) i might swerve in that corner.mp3" loop></audio>
+  <audio id="danceTrack" src="dance.mp3" loop></audio>
 
-  <!-- Confetti script -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
@@ -119,9 +136,9 @@
     const audio = document.getElementById('audio');
     const danceTrack = document.getElementById('danceTrack');
     const overlay = document.getElementById('overlay');
+    const overlay2 = document.getElementById('overlay2');
     const confettiCanvas = document.getElementById('confettiCanvas');
 
-    // Start background music on first interaction
     document.body.addEventListener('click', () => {
       if (danceTrack.paused) {
         danceTrack.volume = 0.4;
@@ -129,35 +146,38 @@
       }
     }, { once: true });
 
-    function applyEffect(effectName) {
-      overlay.className = ''; // remove all previous animations
-      void overlay.offsetWidth; // force reflow
-      overlay.classList.add(effectName);
+    function applyEffect(element, effectName) {
+      element.className = element.classList.contains('overlay2') ? 'overlay2' : 'overlay';
+      void element.offsetWidth;
+      element.classList.add(effectName);
     }
 
     button.addEventListener('click', () => {
-      // Play click sound
+      // Reset
+      overlay.className = 'overlay';
+      overlay2.className = 'overlay2';
+      overlay2.style.opacity = '0';
+
+      // Pick random image
+      const img = Math.random() < 0.5 ? 'jt1.JPG' : 'jt2.JPG';
+      overlay.style.backgroundImage = `url('${img}')`;
+      overlay.style.opacity = '1';
+
+      // Sound
       audio.currentTime = 0;
       audio.play();
 
-      // Set up image and ensure it stays
-      overlay.style.backgroundImage = 'url("jt.JPG")';
-      overlay.style.opacity = '1';
-      overlay.className = ''; // reset all classes
-      void overlay.offsetWidth;
+      // Animation sequence
+      applyEffect(overlay, 'fade-in');
+      setTimeout(() => applyEffect(overlay, 'bounce'), 1000);
+      setTimeout(() => applyEffect(overlay, 'spin'), 1800);
+      setTimeout(() => applyEffect(overlay, 'funny1'), 2600);
+      setTimeout(() => applyEffect(overlay, 'funny2'), 3400);
+      setTimeout(() => applyEffect(overlay, 'funny3'), 4200);
+      setTimeout(() => applyEffect(overlay, 'funny4'), 5000);
+      setTimeout(() => applyEffect(overlay, 'funny5'), 5800);
 
-      // Sequence with minimal overlap
-      applyEffect('fade-in');
-
-      setTimeout(() => applyEffect('bounce'), 1000);
-      setTimeout(() => applyEffect('spin'), 1800);
-      setTimeout(() => applyEffect('funny1'), 2600);
-      setTimeout(() => applyEffect('funny2'), 3400);
-      setTimeout(() => applyEffect('funny3'), 4200);
-      setTimeout(() => applyEffect('funny4'), 5000);
-      setTimeout(() => applyEffect('funny5'), 5800);
-
-      // Confetti 💥
+      // Confetti
       setTimeout(() => {
         confetti.create(confettiCanvas, { resize: true })({
           particleCount: 300,
@@ -165,6 +185,15 @@
           origin: { y: 0.6 }
         });
       }, 6600);
+
+      // DANCE TOGETHER 💃🕺
+      setTimeout(() => {
+        overlay.className = 'overlay';
+        overlay2.style.backgroundImage = `url('${img === 'jt1.JPG' ? 'jt2.JPG' : 'jt1.JPG'}')`;
+        overlay2.style.opacity = '1';
+        overlay.classList.add('dance-bounce');
+        overlay2.classList.add('dance-bounce');
+      }, 7000);
     });
   </script>
 </body>
